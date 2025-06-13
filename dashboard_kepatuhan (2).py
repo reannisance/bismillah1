@@ -117,14 +117,17 @@ if uploaded_file:
             st.plotly_chart(fig_line, use_container_width=True)
 
 
-            st.subheader("🏅 Top 5 Objek Pajak Berdasarkan Total Pembayaran (Tabel)")
-            top_wp = (
-                df_output[["Nama Op", "Total Pembayaran"]]
-                .groupby("Nama Op", as_index=False)
+            st.subheader("🏅 Top 5 Objek Pajak Berdasarkan Total Pembayaran (Tabel Lengkap)")
+            
+            # Ambil kolom yang dibutuhkan
+            top_wp_detail = (
+                df_output[["Nama Op", "Total Pembayaran", "Nm Unit", "Klasifikasi"]]
+                .groupby(["Nama Op", "Klasifikasi", "Nm Unit"], as_index=False)
                 .sum()
                 .sort_values("Total Pembayaran", ascending=False)
                 .head(5)
             )
             
             # Tampilkan sebagai tabel
-            st.dataframe(top_wp.style.format({"Total Pembayaran": "Rp{:,.0f}"}), use_container_width=True)
+            st.dataframe(top_wp_detail.style.format({"Total Pembayaran": "Rp{:,.0f}"}), use_container_width=True)
+
