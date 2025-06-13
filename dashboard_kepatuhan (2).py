@@ -120,8 +120,8 @@ if uploaded_file:
             
             # Ambil kolom yang dibutuhkan
             top_wp_detail = (
-                df_output[["Nama Op", "Total Pembayaran", "Nm Unit", "Klasifikasi"]]
-                .groupby(["Nama Op", "Klasifikasi", "Nm Unit"], as_index=False)
+                df_output[["Nama Op", "Total Pembayaran", "Nm Unit", "KLASIFIKASI"]]
+                .groupby(["Nama Op", "KLASIFIKASI", "Nm Unit"], as_index=False)
                 .sum()
                 .sort_values("Total Pembayaran", ascending=False)
                 .head(5)
