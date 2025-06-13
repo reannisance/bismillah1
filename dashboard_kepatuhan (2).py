@@ -116,7 +116,6 @@ if uploaded_file:
             )
             st.plotly_chart(fig_line, use_container_width=True)
 
-
             st.subheader("🏅 Top 5 Objek Pajak Berdasarkan Total Pembayaran (Tabel Lengkap)")
             
             # Ambil kolom yang dibutuhkan
