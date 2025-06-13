@@ -56,7 +56,40 @@ if uploaded_file:
     selected_sheet = st.selectbox("📄 Pilih Nama Sheet", sheet_names)
     df_input = pd.read_excel(xls, sheet_name=selected_sheet)
 
-    required_cols = ["TMT", "Nama Op", "Nm Unit", "KLASIFIKASI"]
+# Baca data
+df_input = pd.read_excel(xls, sheet_name=selected_sheet)
+
+# Normalisasi nama kolom agar tahan terhadap kapitalisasi dan spasi
+df_input.columns = df_input.columns.str.strip().str.lower()
+
+# Buat mapping nama standar ke nama sebenarnya
+col_mapping = {
+    'tmt': None,
+    'nama op': None,
+    'nm unit': None,
+    'klasifikasi': None,
+    'status': None
+}
+
+# Cari kolom yang cocok dari versi lowercase
+for col in df_input.columns:
+    for key in col_mapping:
+        if key.replace(" ", "") == col.replace(" ", ""):
+            col_mapping[key] = col
+
+# Validasi kolom wajib
+required_keys = ['tmt', 'nama op', 'nm unit', 'klasifikasi']
+missing_keys = [key for key in required_keys if col_mapping[key] is None]
+
+if missing_keys:
+    st.error(f"❌ Kolom wajib hilang: {', '.join(missing_keys)}. Harap periksa file Anda.")
+else:
+    # Rename ke nama baku agar kode lama tetap jalan
+    df_input_renamed = df_input.rename(columns={v: k.title() for k, v in col_mapping.items() if v})
+    df_output, payment_cols = hitung_kepatuhan(df_input_renamed.copy(), tahun_pajak)
+
+    
+    required_cols = ["TMT", "Nm Unit", "KLASIFIKASI"]
     missing_cols = [col for col in required_cols if col not in df_input.columns]
 
     if missing_cols:
